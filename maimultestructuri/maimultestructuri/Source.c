@@ -1,6 +1,8 @@
 ﻿//### ✅** Cerințe complete pentru codul tău**
 //
 //-- -
+#include<stdio.h>
+#include<stdlib.h>
 //
 //1. * *Definește o structură `Masina` care să conțină următoarele atribute : **
 //
@@ -9,7 +11,40 @@
 //* `marca` de tip pointer la `char`, alocat dinamic
 //* `capacitateC` de tip `float` (capacitatea cilindrică)
 //* `normaPoluare` de tip `char` (ex: '3', '4', '5', '6')
+struct Masina {
+	int id;
+	int nrLocuri;
+	char* marca;
+	float capacitate;
+	char norma;
+};
+typedef struct Masina Masina;
+Masina init(int id, int nrLocuri, char* marca, float capacitate, char norma) {
+	Masina m;
+
+	m.id = id;
+	m.nrLocuri = nrLocuri;
+	m.capacitate = capacitate;
+	m.norma = norma;
+	if (marca == NULL) {
+		m.marca = NULL;
+
+	}
+	else {
+		m.marca = (char*)malloc(sizeof(char) * strlen(marca) + 1);
+		strcpy_s(m.marca, strlen(marca) + 1, marca);
+	}
+	return m;
+
+}
+int main() {
+	
+	
+
+	return 0;
+}
 //
+
 //2. * *Scrie o funcție `initializare` care primește valorile pentru fiecare atribut și returnează o structură `Masina`. * *
 //
 //*Dacă parametrul `marca` este NULL, câmpul `marca` va rămâne NULL.
