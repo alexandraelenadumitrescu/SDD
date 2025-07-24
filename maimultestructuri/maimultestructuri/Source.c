@@ -74,10 +74,15 @@ void afisareVector(Masina* masini, int nr) {
 //
 //Funcția va returna un vector nou care conține primele `nrElementeCopiate` mașini copiate prin alocare nouă și inițializare.
 //
+
+Masina deep(Masina m) {
+	return init(m.id, m.nrLocuri, m.marca, m.capacitate, m.norma);
+}
 Masina* copiazaPrimeleMasini(Masina* masini, int nr, int nrElementeCopiate) {
 	Masina* masiniNou = (Masina*)malloc(sizeof(Masina) * nrElementeCopiate);
 	for (int i = 0;i < nrElementeCopiate;i++) {
-		masiniNou[i] = masini[i];
+		//masiniNou[i] = masini[i];
+		masiniNou[i] = deep(masini[i]);
 	}
 	return masiniNou;
 }
@@ -111,7 +116,8 @@ Masina* copiazaMasiniCuCCMare(Masina* masini, int nr, int prag) {
 	int j = 0;
 	for (int i = 0;i < nr;i++) {
 		if (masini[i].capacitate > prag) {
-			nou[j] = masini[i];
+			//nou[j] = masini[i];
+			nou[j] = deep(masini[i]);
 			j++;
 		}
 	}
@@ -180,7 +186,8 @@ int main() {
 	afisare(m5);
 	
 	dezalocare(masini, 3);
-	
+	dezalocare(x, 3);
+	dezalocare(masiniNou, 2);
 	
 
 
