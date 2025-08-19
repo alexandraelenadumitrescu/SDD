@@ -5,6 +5,8 @@
 
 #include <stdio.h>
 #include<malloc.h>
+#include <stdlib.h>
+#include <string.h>
 
 struct  Masina {
 	int id;
@@ -97,54 +99,59 @@ void adaugaMasinaInVector(Masina** masini, int* nrMasini, Masina masinaNoua) {
 //
 //Să se implementeze o funcție Masina citireMasinaFisier(FILE* f) care citește o linie din fișier și returnează structura Masina aferentă.
 //
-Masina citireMasinaFisier(FILE* f) {
-	
-	char sep[4] = ",\n;";
-	char line[101];
-	fgets(line, 100, f);
-	Masina aux;
-	aux.id = atoi(strtok(line, sep));
-	aux.nrUsi = atoi(strtok(NULL, sep));
-	aux.pret = atof(strtok(NULL, sep));
-	char* buffer = strtok(NULL, sep);
-	aux.model= (char*)malloc(sizeof(char)*(strlen(buffer) + 1));
-	strcpy_s(aux.model, strlen(buffer) + 1, buffer);
-	buffer = strtok(NULL, sep);
-	aux.numeSofer=(char*)malloc(sizeof(char) * (strlen(buffer) + 1));
-	strcpy_s(aux.numeSofer, strlen(buffer) + 1, buffer);
-	buffer = strtok(NULL, sep);
-	aux.serie = buffer[0];
-	
-	return aux;
-
-}
-
-Masina* citireVectorMasiniFisier(const char* numeFisier, int* nrMasiniCitite) {
-	FILE* f;
-	f = fopen(numeFisier, "r");
-	Masina* v = NULL;
-
-	while (!feof(f)) {
-		adaugaMasinaInVector(&v,nrMasiniCitite,citireMasinaFisier(f));
-	}
-
-	fclose(f);
-	return v;
-}
+//Masina citireMasinaFisier(FILE* f) {
+//	
+//	char sep[4] = ",\n;";
+//	char line[101];
+//	fgets(line, 100, f);
+//	Masina aux;
+//	/*aux.id = atoi(strtok(line, sep));
+//	aux.nrUsi = atoi(strtok(NULL, sep));
+//	aux.pret = atof(strtok(NULL, sep));*/
+//	aux.id = 0;
+//	aux.nrUsi = 0;
+//	aux.pret = 0;
+//
+//	/*char* buffer = strtok(NULL, sep);
+//	aux.model= (char*)malloc(sizeof(char)*(strlen(buffer) + 1));
+//	strcpy_s(aux.model, strlen(buffer) + 1, buffer);*/
+//	aux.model = (char*)malloc(3);
+//	aux.model = "ab";
+//
+//	/*buffer = NULL;
+//	buffer = strtok(NULL, sep);
+//	aux.numeSofer=(char*)malloc(sizeof(char) * (strlen(buffer) + 1));
+//	strcpy_s(aux.numeSofer, strlen(buffer) + 1, buffer);*/
+//	aux.numeSofer = (char*)malloc(3);
+//	aux.numeSofer = "ab";
+//
+//	//buffer = strtok(NULL, sep);
+//	//aux.serie = buffer[0];
+//	aux.serie = 'z';
+//
+//	return aux;
+//
+//}
+//
+//Masina* citireVectorMasiniFisier(const char* numeFisier, int* nrMasiniCitite) {
+//	FILE* f;
+//	f = fopen(numeFisier, "r");
+//	Masina* v = NULL;
+//
+//	while (!feof(f)) {
+//		adaugaMasinaInVector(&v,nrMasiniCitite,citireMasinaFisier(f));
+//	}
+//
+//	
+//	return v;
+//}
 int citireFisier(const char* numeFisier) {
 	FILE* f;
 	f = fopen(numeFisier, "r");
-	if (f == NULL) {
-		printf("Eroare: nu am putut deschide fisierul %s\n", numeFisier);
-		return -1; // cod de eroare
-	}
+	
 	int x;
 	char buffer[100];
-	if (!fgets(buffer, 100, f)) {
-		// nu s-a citit nimic
-		Masina aux = { 0 }; // init cu valori default
-		return 200;
-	}
+	
 	fgets(buffer, 100, f);
 
 	char sep[4] = ",\n;";
@@ -153,6 +160,49 @@ int citireFisier(const char* numeFisier) {
 	return x;
 
 }
+
+Masina citireMasinaFisier(char* line) {
+	
+	char sep[4] = ",\n;";
+	//char line[101];*/
+	//fgets(line, 100, f);
+	Masina aux;
+	aux.id = atoi(strtok(line,sep));
+
+	aux.nrUsi = atoi(strtok(NULL, sep));
+
+	aux.pret = atof(strtok(NULL, sep));
+
+	char* buffer = strtok(NULL, sep);
+	aux.model = (char*)malloc(sizeof(char) * (strlen(buffer)+1));
+	strcpy_s(aux.model, strlen(buffer) + 1, buffer);
+
+	buffer = strtok(NULL, sep);
+	aux.numeSofer = (char*)malloc(sizeof(char) * (strlen(buffer) + 1));
+	strcpy_s(aux.numeSofer, strlen(buffer) + 1, buffer);
+
+	buffer = strtok(NULL, sep);
+	aux.serie = buffer[0];
+	
+	return aux;
+
+
+}
+Masina* citireVectorMasiniFisier(const char* numeFisier, int* nrMasiniCitite) {
+	FILE* f;
+
+	f = fopen(numeFisier, "r");
+	Masina* vector=NULL;
+	/*while (!feof(f)) {
+		adaugaMasinaInVector(&vector, nrMasiniCitite, citireMasinaFisier(f));
+	}*/
+	char line[256];
+	while (fgets(line, sizeof(line), f)) {
+		Masina m = citireMasinaFisier(line);
+		adaugaMasinaInVector(&vector, nrMasiniCitite, m);
+	}
+	return vector;
+}
 //
 //Să se implementeze o funcție Masina* citireVectorMasiniFisier(const char* numeFisier, int* nrMasiniCitite) care parcurge fișierul și returnează vectorul de mașini citite.
 //
@@ -160,6 +210,18 @@ int citireFisier(const char* numeFisier) {
 //
 //Să se implementeze o funcție void dezalocareVectorMasini(Masina** vector, int* nrMasini) care eliberează memoria alocată pentru vector și pentru câmpurile de tip șir de caractere.
 //
+void dezalocareVectorMasini(Masina** vector, int* nrMasini) {
+	if (*vector != NULL) {
+		for (int i = 0; i < *nrMasini; i++) {
+			free((*vector)[i].model);
+			free((*vector)[i].numeSofer);
+		}
+		free(*vector);
+		*vector = NULL;
+		*nrMasini = 0;
+	}
+}
+
 //Funcția main
 //
 //În main să se citească vectorul de mașini din fișierul masini.txt.
@@ -188,10 +250,20 @@ int main() {
 	printf("------------------\nACEASTA ESTE MASINA CITITA DIN FISIER");
 	/*Masina mf = citireMasinaFisier("masini.txt");
 	afisare(mf);*/
-	int n = 2;
-	//Masina* v = citireVectorMasiniFisier("masini.txt", &n);
-	//afisareVectorMasini(v,n);
-	printf("%d", citireFisier("chiar.txt"));
+	int n = 0;
+	Masina* v = NULL;
+		v = citireVectorMasiniFisier("masini.txt", &n);
+	afisareVectorMasini(v,n);
+	//printf("%d", citireFisier("chiar.txt"));
+	dezalocareVectorMasini(&v, &n);
+	printf("Dupa dezalocare, nrMasini = %d\n", n);
+	afisareVectorMasini(v, n); 
 
 	return 0;
 }
+
+
+
+
+
+
