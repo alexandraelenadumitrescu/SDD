@@ -134,12 +134,14 @@ char* nrDeCartiPerCategorie(Carte* carti, int nrCarti) {
 	categorii[nrCarti] = '\0';
 	return categorii;
 }
-char* frecvente(char* categorii) {
-	for (int i = 0;i < strlen(categorii);i++) {
-		for (int j = i+1;j < strlen(categorii);) {
-			if (categorii[i] == categorii[j]) {
-				for (int k = j ;k < strlen(categorii);k++) {
-					categorii[k] = categorii[k+ 1];
+char* frecventeUQ(char* categorii) {
+	char* copie = (char*)malloc(strlen(categorii + 1));
+	strcpy_s(copie, strlen(categorii) + 1, categorii);
+	for (int i = 0;i < strlen(copie);i++) {
+		for (int j = i+1;j < strlen(copie);) {
+			if (copie[i] == copie[j]) {
+				for (int k = j ;k < strlen(copie);k++) {
+					copie[k] = copie[k+ 1];
 				}
 				
 			}
@@ -148,9 +150,26 @@ char* frecvente(char* categorii) {
 			}
 		}
 	}
-	return categorii;
+	
+	return copie;
 	
 }
+
+void frecvente(char* categorii, char* frecventeUQ) {
+	int count = 0;
+	for (int i = 0;i < strlen(frecventeUQ);i++) {
+		count = 0;
+		for (int j = 0;j < strlen(categorii);j++) {
+			
+			if (categorii[j] == frecventeUQ[i]) {
+				count++;
+			}
+		}
+		printf("categoria %c apare de %d ori\n", frecventeUQ[i], count);
+	}
+}
+
+
 
 /*
    Cerința 6:
@@ -191,8 +210,16 @@ int main() {
 	char* sir =(char*)malloc( strlen("abcabcabc")+1);
 	//sir = "abcabcabc";
 	strcpy_s(sir, strlen("abcabcabc") + 1, "abcabcabc");
+	char* sir1 = (char*)malloc(strlen("abcabcabc") + 1);
+	strcpy_s(sir1, strlen("abcabcabc") + 1, "abcabcabc");
 	printf("%s", sir);
 	printf("\n-------------\n");
-	printf("%s", frecvente(sir));
+	//printf("%s", frecventeUQ(sir));
+	printf("\n-------------\n");
+	frecvente(sir, frecventeUQ(sir));
+	printf("\n-------------\n");
+
+	frecvente(nrDeCartiPerCategorie(carti, n), frecventeUQ(nrDeCartiPerCategorie(carti, n)));
+
 	return 0;
 }
