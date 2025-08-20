@@ -1,0 +1,3 @@
+1,300,45.5,Programare in C,Popescu I.,T
+2,150,25.0,Matematica distractiva,Ionescu A.,S
+3,300,50.0,Algoritmi avansati,Georgescu M.,T
