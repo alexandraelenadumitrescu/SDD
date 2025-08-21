@@ -80,7 +80,21 @@ void afisareVector(Carte* carti, int nrCarti) {
 	
 	}
 }
+Carte deepCopy(Carte original) {
+	Carte copie;
+	copie.id = original.id;
+	copie.nrPagini = original.nrPagini;
+	copie.pret = original.pret;
 
+	copie.titlu = (char*)malloc(strlen(original.titlu) + 1);
+	strcpy_s(copie.titlu, strlen(original.titlu) + 1, original.titlu);
+
+	copie.autor = (char*)malloc(strlen(original.autor) + 1);
+	strcpy_s(copie.autor, strlen(original.autor) + 1, original.autor);
+
+	copie.categorie = original.categorie;
+	return copie;
+}
 /*
    Cerința 2:
    Să se determine și să se afișeze cartea cu **cel mai mare preț** din fișier.
@@ -135,7 +149,7 @@ char* nrDeCartiPerCategorie(Carte* carti, int nrCarti) {
 	return categorii;
 }
 char* frecventeUQ(char* categorii) {
-	char* copie = (char*)malloc(strlen(categorii + 1));
+	char* copie = (char*)malloc(strlen(categorii) + 1);
 	strcpy_s(copie, strlen(categorii) + 1, categorii);
 	for (int i = 0;i < strlen(copie);i++) {
 		for (int j = i+1;j < strlen(copie);) {
@@ -175,27 +189,118 @@ void frecvente(char* categorii, char* frecventeUQ) {
    Cerința 6:
    Să se afișeze cărțile unui anumit autor, citind numele autorului de la tastatură.
 */
+void afisareCartiInFunctieDeAutor(Carte* carti,int nr) {
+	Carte* autor=NULL;
+	int count = 0;
 
+	printf("introduceti numele autorului:\n");
+
+	char buffer[256];
+	scanf("%s", buffer);
+	for (int i = 0;i < nr;i++) {
+		//if (carti[i].autor == buffer)
+			if (strcmp(carti[i].autor, buffer) == 0)
+			{
+			count++;
+			autor = (Carte*)realloc(autor, sizeof(Carte)*count);
+			autor[count - 1] = carti[i];
+		}
+	}
+	afisareVector(autor, count);
+
+}
 /*
    Cerința 7:
    Să se sorteze cărțile după preț (crescător) și să se afișeze lista sortată.
 */
+int minim(int lungime,Carte* carti,int start) {
+	
+	float minim = carti[0].pret;
+	int index = 0;
+	for (int i = start;i < lungime;i++) {
+		if (minim > carti[i].pret) {
+			index = i;
+			minim = carti[i].pret;
+		}
+	}
+	return index;
+}
 
+Carte* sortare(Carte* carti, int nrCarti) {
+	Carte* copie = (Carte*)malloc(nrCarti * sizeof(Carte));
+	for (int i = 0;i < nrCarti;i++) {
+		//copie[i] = carti[i]; - shallow copy
+		copie[i] = deepCopy(carti[i]);
+	}
+	
+	for (int i = 0;i < nrCarti - 1;i++) {
+		if (copie[i].pret > carti[minim(nrCarti,copie,i)].pret) {
+			Carte aux = deepCopy(copie[i]);
+			copie[i] = deepCopy(copie[minim(nrCarti,copie,i)]);
+			copie[minim(nrCarti, copie, i)]=deepCopy(aux);
+		}
+	}
+	return copie;
+	
+}
 /*
    Cerința 8:
    Să se calculeze suma totală a prețurilor tuturor cărților dintr-o anumită categorie.
 */
+float sumaTotalaPerCategorie(char categorie,Carte* carti,int nrCarti) {
+	float suma = 0;
+	int count = 0;
+	for (int i = 0;i < nrCarti;i++) {
+		printf(" % c % c\n", categorie, carti[i].categorie);
+		if (carti[i].categorie == categorie) {
+			
+			suma += carti[i].pret;
+			count++;
+		}
+	}
+	return suma;
+}
 
 /*
    Cerința 9:
    Să se determine cartea cu **cel mai mare număr de pagini** și să se afișeze titlul și autorul acesteia.
 */
+Carte maximPagini(int lungime, Carte* carti) {
+	Carte carte;
+	int maxim = carti[0].nrPagini;
+	int index = 0;
+	for (int i = 0;i < lungime;i++) {
+		if (maxim < carti[i].nrPagini) {
+			index = i;
+			 maxim = carti[i].nrPagini;
+		}
+	}
+	carte = deepCopy(carti[index]);
+	printf("%s\n", carte.titlu);
+	printf("%s\n", carte.autor);
+	return carte;
+}
 
 /*
    Cerința 10:
    Să se afișeze toate cărțile care au prețul mai mare decât media prețurilor din fișier.
 */
+float pretMediu1(Carte* carti, int lungime) {
+	float suma = 0;
+	for (int i = 0;i < lungime;i++) {
+		suma += carti[i].pret;
+	}
+	return suma / lungime;
+}
 
+void pretPesteMedie(Carte* carti, int lungime) {
+	float medie = pretMediu1(carti, lungime);
+	for (int i = 0;i < lungime;i++) {
+		if (carti[i].pret > medie) {
+			afisareCarte(carti[i]);
+		}
+	}
+}
 
 int main() {
 	Carte* carti = NULL;
@@ -221,5 +326,14 @@ int main() {
 
 	frecvente(nrDeCartiPerCategorie(carti, n), frecventeUQ(nrDeCartiPerCategorie(carti, n)));
 
+	printf("\n-------------\n");
+
+	afisareCartiInFunctieDeAutor(carti,n);
+	printf("%d", minim(n, carti,0));
+	afisareVector(sortare(carti,n), n);
+	printf("%f", sumaTotalaPerCategorie('T', carti, n));
+	printf("%d", n);
+	maximPagini(n,carti);
+	pretPesteMedie(carti, n);
 	return 0;
 }

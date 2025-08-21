@@ -1,3 +1,6 @@
 1,300,45.5,Programare in C,Popescu I.,T
 2,150,25.0,Matematica distractiva,Ionescu A.,S
 3,300,50.0,Algoritmi avansati,Georgescu M.,T
+4,200,35.0,Statistica aplicata,Marinescu A.,S
+5,450,60.0,Structuri de date,Iliescu D.,T
+5,450,60.0,Structuri de date,Ion,T
