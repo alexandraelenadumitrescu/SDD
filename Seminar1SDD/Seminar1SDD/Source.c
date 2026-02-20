@@ -64,7 +64,7 @@ int main() {
 	struct Student s2;
 	s2 = initializare(1, 1059, "Marcel", 9.3, 'G');
 	afisare(s2);
-	printf("%s",comparaStudentia3(s, s2));
+	printf("%s",comparaStudenti(s, s2));
 	//dezalocare(&s);
 	return 0;
 }
